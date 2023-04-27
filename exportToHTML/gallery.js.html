@@ -1,0 +1,150 @@
+<html>
+<head>
+<title>gallery.js</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #6aab73;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #cf8e6d;}
+.s5 { color: #7a7e85;}
+.s6 { color: #2aacb8;}
+.s7 { color: #67a37c; font-style: italic;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+gallery.js</font>
+</center></td></tr></table>
+<pre><span class="s0">&quot;use strict&quot;</span><span class="s1">;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Selects a random full image at the start and displays it.</span>
+ <span class="s3">*/</span>
+<span class="s4">function </span><span class="s2">showRandomImageAtStart</span><span class="s1">() {</span>
+    <span class="s5">// TODO: Select all 6 links (&lt;a&gt;) in the thumbnail section. They contain the URLs to the full images.</span>
+    <span class="s5">// TODO: Select a random entry out of these 6.</span>
+    <span class="s5">// TODO: Implement switchFullImage() below.</span>
+    <span class="s5">// TODO: Call switchFullImage() with the URL of the random image and the alt attribute of the thumbnail (it contains the description).</span>
+    <span class="s5">// TODO: Set a background color (classes .bg-dark and .text-white) to the card-body of your random image (hint: it's the sibling element of your link).</span>
+    <span class="s4">const </span><span class="s2">links </span><span class="s1">= </span><span class="s2">document</span><span class="s1">.</span><span class="s2">getElementsByClassName</span><span class="s1">(</span><span class="s0">&quot;card-link&quot;</span><span class="s1">);</span>
+    <span class="s4">const </span><span class="s2">randomLink </span><span class="s1">= </span><span class="s2">links</span><span class="s1">[</span><span class="s2">getRandomInt</span><span class="s1">(</span><span class="s6">0</span><span class="s1">, </span><span class="s2">links</span><span class="s1">.</span><span class="s2">length</span><span class="s1">)];</span>
+    <span class="s4">const </span><span class="s2">randomImage </span><span class="s1">= </span><span class="s2">randomLink</span><span class="s1">.</span><span class="s2">href</span><span class="s1">;</span>
+    <span class="s4">const </span><span class="s2">randomAlt </span><span class="s1">= </span><span class="s2">randomLink</span><span class="s1">.</span><span class="s2">getAttribute</span><span class="s1">(</span><span class="s0">&quot;alt&quot;</span><span class="s1">);</span>
+    <span class="s2">switchFullImage</span><span class="s1">(</span><span class="s2">randomImage</span><span class="s1">, </span><span class="s2">randomAlt</span><span class="s1">);</span>
+    <span class="s4">const </span><span class="s2">randomCard </span><span class="s1">= </span><span class="s2">randomLink</span><span class="s1">.</span><span class="s2">nextElementSibling</span><span class="s1">;</span>
+    <span class="s2">randomCard</span><span class="s1">.</span><span class="s2">classList</span><span class="s1">.</span><span class="s2">add</span><span class="s1">(</span><span class="s0">&quot;bg-dark&quot;</span><span class="s1">);</span>
+    <span class="s2">randomCard</span><span class="s1">.</span><span class="s2">classList</span><span class="s1">.</span><span class="s2">add</span><span class="s1">(</span><span class="s0">&quot;text-white&quot;</span><span class="s1">);</span>
+<span class="s1">}</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Prepare the links on the full images so that they execute the following tasks:</span>
+ <span class="s3">* - Switch the full image to the one that has been clicked on.</span>
+ <span class="s3">* - Set the highlight under the current thumbnail.</span>
+ <span class="s3">* - Load the notes for the current image.</span>
+ <span class="s3">*/</span>
+<span class="s4">function </span><span class="s2">prepareLinks</span><span class="s1">() {</span>
+    <span class="s5">// TODO: Select all the 6 links (&lt;a&gt;) in the thumbnail section.</span>
+    <span class="s5">// TODO: Set an event listener for the click event on every &lt;a&gt; element.</span>
+    <span class="s5">//  (or advanced: think of a way to do it with one single handler)</span>
+
+    <span class="s5">// TODO: The callback of the listener should do the following things:</span>
+    <span class="s5">//  - Remove the .bg-dark and .text-white classes from the card where it's currently set.</span>
+    <span class="s5">//  - Add both classes again to the card where the click happened (hint: &quot;this&quot; contains the very &lt;a&gt; element, where the click happened).</span>
+    <span class="s5">//  - Call switchFullImage() with the URL clicked link and the alt attribute of the thumbnail.</span>
+    <span class="s5">//  - Implement and then call loadNotes() with the key for the current image (hint: the full image's URL makes an easy and unique key).</span>
+    <span class="s5">//  - Prevent the default action for the link (we don't want to follow it).</span>
+    <span class="s4">const </span><span class="s2">sectionThumbnail </span><span class="s1">= </span><span class="s2">document</span><span class="s1">.</span><span class="s2">getElementById</span><span class="s1">(</span><span class="s0">&quot;thumbnails&quot;</span><span class="s1">);</span>
+    <span class="s4">const </span><span class="s2">thumbnailLinks </span><span class="s1">= </span><span class="s2">sectionThumbnail</span><span class="s1">.</span><span class="s2">querySelectorAll</span><span class="s1">(</span><span class="s0">&quot;a&quot;</span><span class="s1">);</span>
+
+    <span class="s2">thumbnailLinks</span><span class="s1">.</span><span class="s2">forEach</span><span class="s1">(</span><span class="s4">function</span><span class="s1">(</span><span class="s2">link</span><span class="s1">) {</span>
+        <span class="s2">link</span><span class="s1">.</span><span class="s2">addEventListener</span><span class="s1">(</span><span class="s0">&quot;click&quot;</span><span class="s1">, </span><span class="s4">function</span><span class="s1">(</span><span class="s2">event</span><span class="s1">) {</span>
+            <span class="s2">event</span><span class="s1">.</span><span class="s2">preventDefault</span><span class="s1">();</span>
+            <span class="s2">thumbnailLinks</span><span class="s1">.</span><span class="s2">forEach</span><span class="s1">(</span><span class="s4">function</span><span class="s1">(</span><span class="s2">link2</span><span class="s1">) {</span>
+                <span class="s2">link2</span><span class="s1">.</span><span class="s2">nextElementSibling</span><span class="s1">.</span><span class="s2">classList</span><span class="s1">.</span><span class="s2">remove</span><span class="s1">(</span><span class="s0">&quot;bg-dark&quot;</span><span class="s1">, </span><span class="s0">&quot;text-white&quot;</span><span class="s1">);</span>
+            <span class="s1">});</span>
+            <span class="s4">this</span><span class="s1">.</span><span class="s2">nextElementSibling</span><span class="s1">.</span><span class="s2">classList</span><span class="s1">.</span><span class="s2">add</span><span class="s1">(</span><span class="s0">&quot;bg-dark&quot;</span><span class="s1">, </span><span class="s0">&quot;text-white&quot;</span><span class="s1">);</span>
+            <span class="s2">switchFullImage</span><span class="s1">(</span><span class="s4">this</span><span class="s1">.</span><span class="s2">href</span><span class="s1">, </span><span class="s4">this</span><span class="s1">.</span><span class="s2">firstElementChild</span><span class="s1">.</span><span class="s2">alt</span><span class="s1">);</span>
+            <span class="s2">loadNotes</span><span class="s1">(</span><span class="s4">this</span><span class="s1">.</span><span class="s2">href</span><span class="s1">);</span>
+            <span class="s2">storeNotes</span><span class="s1">(</span><span class="s4">this</span><span class="s1">.</span><span class="s2">href</span><span class="s1">);</span>
+        <span class="s1">});</span>
+    <span class="s1">});</span>
+<span class="s1">}</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Stores or deletes the updated notes of an image after they have been changed.</span>
+ <span class="s3">*/</span>
+<span class="s4">function </span><span class="s2">storeNotes</span><span class="s1">() {</span>
+    <span class="s4">const </span><span class="s2">notesField </span><span class="s1">= </span><span class="s2">document</span><span class="s1">.</span><span class="s2">getElementById</span><span class="s1">(</span><span class="s0">&quot;notes&quot;</span><span class="s1">);</span>
+    <span class="s2">notesField</span><span class="s1">.</span><span class="s2">addEventListener</span><span class="s1">(</span><span class="s0">&quot;blur&quot;</span><span class="s1">, </span><span class="s4">function</span><span class="s1">() {</span>
+        <span class="s4">const </span><span class="s2">currentKey </span><span class="s1">= </span><span class="s2">document</span><span class="s1">.</span><span class="s2">querySelector</span><span class="s1">(</span><span class="s0">&quot;img&quot;</span><span class="s1">).</span><span class="s2">src</span><span class="s1">;</span>
+        <span class="s4">const </span><span class="s2">currentNotes </span><span class="s1">= </span><span class="s2">notesField</span><span class="s1">.</span><span class="s2">value</span><span class="s1">;</span>
+        <span class="s4">if </span><span class="s1">(</span><span class="s2">currentNotes </span><span class="s1">=== </span><span class="s0">&quot;&quot;</span><span class="s1">) {</span>
+            <span class="s2">localStorage</span><span class="s1">.</span><span class="s2">removeItem</span><span class="s1">(</span><span class="s2">currentKey</span><span class="s1">);</span>
+        <span class="s1">} </span><span class="s4">else </span><span class="s1">{</span>
+            <span class="s2">localStorage</span><span class="s1">.</span><span class="s2">setItem</span><span class="s1">(</span><span class="s2">currentKey</span><span class="s1">, </span><span class="s2">currentNotes</span><span class="s1">);</span>
+        <span class="s1">}</span>
+    <span class="s1">});</span>
+<span class="s1">}</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Switches the full image in the &lt;figure&gt; element to the one specified in the parameter. Also updates the image's alt</span>
+ <span class="s3">* attribute and the figure's caption.</span>
+ <span class="s3">* </span><span class="s7">@param </span><span class="s3">{string} imageUrl The URL to the new image (the image's src attribute value).</span>
+ <span class="s3">* </span><span class="s7">@param </span><span class="s3">{string} imageDescription The image's description (used for the alt attribute and the figure's caption).</span>
+ <span class="s3">*/</span>
+<span class="s4">function </span><span class="s2">switchFullImage</span><span class="s1">(</span><span class="s2">imageUrl</span><span class="s1">, </span><span class="s2">imageDescription</span><span class="s1">) {</span>
+    <span class="s5">// Get the &lt;img&gt; element for the full image by its class name.</span>
+    <span class="s4">const </span><span class="s2">fullImage </span><span class="s1">= </span><span class="s2">document</span><span class="s1">.</span><span class="s2">querySelector</span><span class="s1">(</span><span class="s0">&quot;.full-image img&quot;</span><span class="s1">);</span>
+
+    <span class="s5">// Set the src and alt attributes with the values from the parameters.</span>
+    <span class="s2">fullImage</span><span class="s1">.</span><span class="s2">src </span><span class="s1">= </span><span class="s2">imageUrl</span><span class="s1">;</span>
+    <span class="s2">fullImage</span><span class="s1">.</span><span class="s2">alt </span><span class="s1">= </span><span class="s2">imageDescription</span><span class="s1">;</span>
+
+    <span class="s5">// Select the &lt;figcaption&gt; element and set its description as text content.</span>
+    <span class="s4">const </span><span class="s2">figureCaption </span><span class="s1">= </span><span class="s2">document</span><span class="s1">.</span><span class="s2">querySelector</span><span class="s1">(</span><span class="s0">&quot;.full-image figcaption&quot;</span><span class="s1">);</span>
+    <span class="s2">figureCaption</span><span class="s1">.</span><span class="s2">textContent </span><span class="s1">= </span><span class="s2">imageDescription</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Loads the notes from local storage for a given key and sets the contents in the notes field with the ID notes.</span>
+ <span class="s3">* </span><span class="s7">@param </span><span class="s3">{string} key The key in local storage where the entry is found.</span>
+ <span class="s3">*/</span>
+<span class="s4">function </span><span class="s2">loadNotes</span><span class="s1">(</span><span class="s2">key</span><span class="s1">) {</span>
+    <span class="s5">// TODO: Select the notes field.</span>
+    <span class="s5">// TODO: Check the local storage at the provided key.</span>
+    <span class="s5">//  - If there's an entry, set the notes field's HTML content to the local storage's content.</span>
+    <span class="s5">//  - If there's no entry, set the default text &quot;Enter your notes here!&quot;.</span>
+    <span class="s4">const </span><span class="s2">notesField </span><span class="s1">= </span><span class="s2">document</span><span class="s1">.</span><span class="s2">getElementById</span><span class="s1">(</span><span class="s0">&quot;notes&quot;</span><span class="s1">);</span>
+    <span class="s4">const </span><span class="s2">defaultText </span><span class="s1">= </span><span class="s0">&quot;Enter your notes here!&quot;</span><span class="s1">;</span>
+    <span class="s4">const </span><span class="s2">savedNotes </span><span class="s1">= </span><span class="s2">localStorage</span><span class="s1">.</span><span class="s2">getItem</span><span class="s1">(</span><span class="s2">key</span><span class="s1">);</span>
+    <span class="s4">if </span><span class="s1">(</span><span class="s2">savedNotes </span><span class="s1">=== </span><span class="s4">null </span><span class="s1">|| </span><span class="s2">savedNotes </span><span class="s1">== </span><span class="s0">&quot;&quot;</span><span class="s1">) { </span><span class="s5">// Verwende savedNotes anstatt localStorage.getItem(key)</span>
+        <span class="s2">notesField</span><span class="s1">.</span><span class="s2">innerHTML </span><span class="s1">= </span><span class="s2">defaultText</span><span class="s1">;</span>
+    <span class="s1">} </span><span class="s4">else </span><span class="s1">{</span>
+        <span class="s2">notesField</span><span class="s1">.</span><span class="s2">innerHTML </span><span class="s1">= </span><span class="s2">savedNotes</span><span class="s1">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Returns a random integer value between min (included) and max (excluded).</span>
+ <span class="s3">* </span><span class="s7">@param </span><span class="s3">{number} min The minimum value (included).</span>
+ <span class="s3">* </span><span class="s7">@param </span><span class="s3">{number} max The maximum value (excluded).</span>
+ <span class="s3">* </span><span class="s7">@returns </span><span class="s3">{number} A random integer value between min (included) and max (excluded).</span>
+ <span class="s3">*/</span>
+<span class="s4">function </span><span class="s2">getRandomInt</span><span class="s1">(</span><span class="s2">min</span><span class="s1">, </span><span class="s2">max</span><span class="s1">) {</span>
+    <span class="s2">min </span><span class="s1">= </span><span class="s2">Math</span><span class="s1">.</span><span class="s2">ceil</span><span class="s1">(</span><span class="s2">min</span><span class="s1">);</span>
+    <span class="s2">max </span><span class="s1">= </span><span class="s2">Math</span><span class="s1">.</span><span class="s2">floor</span><span class="s1">(</span><span class="s2">max</span><span class="s1">);</span>
+    <span class="s4">return </span><span class="s2">Math</span><span class="s1">.</span><span class="s2">floor</span><span class="s1">(</span><span class="s2">Math</span><span class="s1">.</span><span class="s2">random</span><span class="s1">() * (</span><span class="s2">max </span><span class="s1">- </span><span class="s2">min</span><span class="s1">)) + </span><span class="s2">min</span><span class="s1">;</span>
+<span class="s1">}</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* Gets the whole thing started.</span>
+ <span class="s3">*/</span>
+<span class="s2">showRandomImageAtStart</span><span class="s1">();</span>
+<span class="s2">prepareLinks</span><span class="s1">();</span>
+<span class="s2">storeNotes</span><span class="s1">();</span></pre>
+</body>
+</html>

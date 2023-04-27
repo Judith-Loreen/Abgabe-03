@@ -9,6 +9,14 @@ function showRandomImageAtStart() {
     // TODO: Implement switchFullImage() below.
     // TODO: Call switchFullImage() with the URL of the random image and the alt attribute of the thumbnail (it contains the description).
     // TODO: Set a background color (classes .bg-dark and .text-white) to the card-body of your random image (hint: it's the sibling element of your link).
+    const links = document.getElementsByClassName("card-link");
+    const randomLink = links[getRandomInt(0, links.length)];
+    const randomImage = randomLink.href;
+    const randomAlt = randomLink.getAttribute("alt");
+    switchFullImage(randomImage, randomAlt);
+    const randomCard = randomLink.nextElementSibling;
+    randomCard.classList.add("bg-dark");
+    randomCard.classList.add("text-white");
 }
 
 /**
@@ -28,16 +36,37 @@ function prepareLinks() {
     //  - Call switchFullImage() with the URL clicked link and the alt attribute of the thumbnail.
     //  - Implement and then call loadNotes() with the key for the current image (hint: the full image's URL makes an easy and unique key).
     //  - Prevent the default action for the link (we don't want to follow it).
+    const sectionThumbnail = document.getElementById("thumbnails");
+    const thumbnailLinks = sectionThumbnail.querySelectorAll("a");
+
+    thumbnailLinks.forEach(function(link) {
+        link.addEventListener("click", function(event) {
+            event.preventDefault();
+            thumbnailLinks.forEach(function(link2) {
+                link2.nextElementSibling.classList.remove("bg-dark", "text-white");
+            });
+            this.nextElementSibling.classList.add("bg-dark", "text-white");
+            switchFullImage(this.href, this.firstElementChild.alt);
+            loadNotes(this.href);
+            storeNotes(this.href);
+        });
+    });
 }
 
 /**
  * Stores or deletes the updated notes of an image after they have been changed.
  */
 function storeNotes() {
-    // TODO: Select the notes field and add a blur listener.
-    // TODO: When the notes field loses focus, store the notes for the current image in the local storage.
-    // TODO: If the notes field is empty, remove the local storage entry.
-    // TODO: Choose an appropriate key (hint: the full image's URL makes an easy and unique key).
+    const notesField = document.getElementById("notes");
+    notesField.addEventListener("blur", function() {
+        const currentKey = document.querySelector("img").src;
+        const currentNotes = notesField.value;
+        if (currentNotes === "") {
+            localStorage.removeItem(currentKey);
+        } else {
+            localStorage.setItem(currentKey, currentNotes);
+        }
+    });
 }
 
 /**
@@ -47,10 +76,16 @@ function storeNotes() {
  * @param {string} imageDescription The image's description (used for the alt attribute and the figure's caption).
  */
 function switchFullImage(imageUrl, imageDescription) {
-    // TODO: Get the <img> element for the full image. Select it by its class or tag name.
-    // TODO: Set its src and alt attributes with the values from the parameters (imageUrl, imageDescription).
-    // TODO: Select the <figcaption> element.
-    // TODO: Set the description (the one you used for the alt attribute) as its text content.
+    // Get the <img> element for the full image by its class name.
+    const fullImage = document.querySelector(".full-image img");
+
+    // Set the src and alt attributes with the values from the parameters.
+    fullImage.src = imageUrl;
+    fullImage.alt = imageDescription;
+
+    // Select the <figcaption> element and set its description as text content.
+    const figureCaption = document.querySelector(".full-image figcaption");
+    figureCaption.textContent = imageDescription;
 }
 
 /**
@@ -62,6 +97,14 @@ function loadNotes(key) {
     // TODO: Check the local storage at the provided key.
     //  - If there's an entry, set the notes field's HTML content to the local storage's content.
     //  - If there's no entry, set the default text "Enter your notes here!".
+    const notesField = document.getElementById("notes");
+    const defaultText = "Enter your notes here!";
+    const savedNotes = localStorage.getItem(key);
+    if (savedNotes === null || savedNotes == "") { // Verwende savedNotes anstatt localStorage.getItem(key)
+        notesField.innerHTML = defaultText;
+    } else {
+        notesField.innerHTML = savedNotes;
+    }
 }
 
 /**
